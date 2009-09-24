@@ -71,7 +71,7 @@ Description: uses wp_enqueue_style for safe printing of CSS style sheets
 */
 function hsq_loadcss()
 {
-	wp_enqueue_style('hsq_ini',get_settings('siteurl').'/wp-content/plugins/hungred-image-fit/css/hsq_ini.css');
+	wp_enqueue_style('hsq_ini',WP_PLUGIN_URL.'/hungred-smart-quotes/css/hsq_ini.css');
 }
 add_action('admin_print_styles', 'hsq_loadcss');
 function hsq_id()
