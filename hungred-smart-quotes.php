@@ -4,7 +4,7 @@ Plugin Name: Hungred Smart Quotes
 Plugin URI: 
 Description: This plugin remove and update any formatted tag to its original text due to wordpress smart quotes capability
 Author: Clay lua
-Version: 0.3
+Version: 0.4
 Author URI: http://hungred.com
 */
 
@@ -127,6 +127,12 @@ function hsq_return_format($text)
 	$text = @htmlspecialchars_decode ($text);
 	$text = @htmlspecialchars_decode ($text);
 	$text = @htmlspecialchars_decode ($text);
+	$text = @htmlspecialchars_decode ($text);
+	$text = @htmlspecialchars_decode ($text);
+	$text = @htmlspecialchars_decode ($text);
+	$text = @htmlspecialchars_decode ($text);
+	$text = @htmlspecialchars_decode ($text);
+	$text = @htmlspecialchars_decode ($text);
 
 	$text = hsq_wp_specialchars_decode($text);
 
@@ -195,11 +201,12 @@ function hsq_encode($find, $stop, &$src)
 	if($matches[0] != NULL)
 	foreach($matches[0] as $e){
 		$start = strpos($e, $find);
+		//$e = str_replace('<', '&lt;', $e);
 		if($start !== FALSE)
 		{
 			
 			$start = strpos($e, ">", $start)+1;
-			$end = strrpos($e, $stop, $start);	
+			$end = strrpos($e, '<', $start);	
 			$value = substring($e, $start, $end);
 			$encoded_value = str_replace('<', '&lt;', $value);
 			$new_e = str_replace($value, $encoded_value, $e);	

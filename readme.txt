@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=i_ah_
 Tags: hungred, smart, quotes, quote, formatted, text, unformat, format, remover, remove, encode, decode, syntaxhigher evolved
 Requires at least: 2.7
 Tested up to: 2.8.4
-Stable tag: 0.3
+Stable tag: 0.4
 
 This plugin is created by Clay Lua. Please visit the plugin page for more information.
 
@@ -56,3 +56,5 @@ Hence, this plugin still provides you with the functionality of smart quote with
 * Added options to stop Wordpress smart quotes
 = 0.3 =
 * Fixed some important character get recognized as code problem
+= 0.4 =
+* Fixed the problem where the decoding doesn't apply to the characters at the lower <pre> tag.
