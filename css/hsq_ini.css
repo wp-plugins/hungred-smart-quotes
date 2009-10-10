@@ -1,6 +1,22 @@
+.postbox div.inside{position:relative;padding: 10px;}
+.size{min-height: 0 !important;}
+#hsq_admin{width: 70%;float: left;}
 
+div.inside ul {
+	margin-left: 20px;
+}
+div.inside ul li {
+	list-style: square;
+	line-height:16px;
+}
+div.inside ul li.rss {
+	list-style-image: url(/wp-includes/images/rss.png);
+}
 
-.hif_wrap .label
+.text {
+	width: 250px;
+}
+.hsq_wrap .label
 {
 width: 12em;
 float: left;
@@ -9,12 +25,12 @@ margin-right: 0.5em;
 display: block
 }
 
-.hif_wrap select, .hif_wrap input
+.hsq_wrap select, .hsq_wrap input[type='text']
 {
 width: 150px;
 }
 
-.hif_red
+.hsq_red
 {
 color: red;
 }
