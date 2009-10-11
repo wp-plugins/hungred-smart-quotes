@@ -1,7 +1,8 @@
 #hsq_admin .postbox div.inside{position:relative;padding: 10px;}
 #hsq_admin .size{min-height: 0 !important;}
 #hsq_admin{width: 70%;float: left;}
-
+.hsq_wrap, #hungred_sidebar{font-family: 'Myriad Pro', sans-serif, Helvetica !important;}
+.hungred_list{padding: 0.5em;}
 ul.hungred_list li{line-height: 16px;list-style: square;}
 ul.hungred_list{
 	margin-left: 20px;
