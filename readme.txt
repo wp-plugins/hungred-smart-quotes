@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=i_ah_
 Tags: hungred, smart, quotes, quote, formatted, text, unformat, format, remover, remove, encode, decode, syntaxhigher evolved
 Requires at least: 2.7
 Tested up to: 2.8.4
-Stable tag: 0.5
+Stable tag: 0.5.1
 
 This plugin is created by Clay Lua. Please visit the plugin page for more information.
 
@@ -61,3 +61,5 @@ Hence, this plugin still provides you with the functionality of smart quote with
 = 0.5 =
 * Improve Admin Interface
 * Added News
+= 0.5.1 =
+* Fixed plugin style that affect other style

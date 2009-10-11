@@ -4,7 +4,7 @@ Plugin Name: Hungred Smart Quotes
 Plugin URI: http://hungred.com/useful-information/wordpress-plugin-hungred-smart-quotes/
 Description: This plugin remove and update any formatted tag to its original text due to wordpress smart quotes capability
 Author: Clay lua
-Version: 0.5
+Version: 0.5.1
 Author URI: http://hungred.com
 */
 
