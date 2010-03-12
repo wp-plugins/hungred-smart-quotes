@@ -4,7 +4,7 @@ Plugin Name: Hungred Smart Quotes
 Plugin URI: http://hungred.com/useful-information/wordpress-plugin-hungred-smart-quotes/
 Description: This plugin remove and update any formatted tag to its original text due to wordpress smart quotes capability
 Author: Clay lua
-Version: 0.5.3
+Version: 0.5.4
 Author URI: http://hungred.com
 */
 
@@ -248,6 +248,83 @@ function substring($str,$start,$end){
 }
 function hsq_wptexturize($text) {
 	global $wp_cockneyreplace;
+	static $static_setup = false, $opening_quote, $closing_quote, $default_no_texturize_tags, $default_no_texturize_shortcodes, $static_characters, $static_replacements, $dynamic_characters, $dynamic_replacements;
+	$output = '';
+	$curl = '';
+	$textarr = preg_split('/(<.*>|\[.*\])/Us', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+	$stop = count($textarr);
+	
+	// No need to setup these variables more than once
+	if (!$static_setup) {
+		/* translators: opening curly quote */
+		$opening_quote = _x('&#8220;', 'opening curly quote');
+		/* translators: closing curly quote */
+		$closing_quote = _x('&#8221;', 'closing curly quote');
+		global $wpdb;
+		$table = $wpdb->prefix."hsq_options";
+		//retrieve new data
+		$query = "SELECT `hsq_additional_allowed_format` FROM `".$table."` WHERE 1 AND `hsq_option_id` = '1' limit 1";
+		$row = $wpdb->get_row($query,ARRAY_A);
+		$default_no_texturize_tags =array('pre', 'code', 'kbd', 'style', 'script', 'tt', stripcslashes($row['hsq_additional_allowed_format']));
+		$default_no_texturize_shortcodes = array('code');
+
+		// if a plugin has provided an autocorrect array, use it
+		if ( isset($wp_cockneyreplace) ) {
+			$cockney = array_keys($wp_cockneyreplace);
+			$cockneyreplace = array_values($wp_cockneyreplace);
+		} else {
+			$cockney = array("'tain't","'twere","'twas","'tis","'twill","'til","'bout","'nuff","'round","'cause");
+			$cockneyreplace = array("&#8217;tain&#8217;t","&#8217;twere","&#8217;twas","&#8217;tis","&#8217;twill","&#8217;til","&#8217;bout","&#8217;nuff","&#8217;round","&#8217;cause");
+		}
+
+		$static_characters = array_merge(array('---', ' -- ', '--', ' - ', 'xn&#8211;', '...', '``', '\'s', '\'\'', ' (tm)'), $cockney);
+		$static_replacements = array_merge(array('&#8212;', ' &#8212; ', '&#8211;', ' &#8211; ', 'xn--', '&#8230;', $opening_quote, '&#8217;s', $closing_quote, ' &#8482;'), $cockneyreplace);
+
+		$dynamic_characters = array('/\'(\d\d(?:&#8217;|\')?s)/', '/(\s|\A|[([{<]|")\'/', '/(\d+)"/', '/(\d+)\'/', '/(\S)\'([^\'\s])/', '/(\s|\A|[([{<])"(?!\s)/', '/"(\s|\S|\Z)/', '/\'([\s.]|\Z)/', '/(\d+)x(\d+)/');
+		$dynamic_replacements = array('&#8217;$1','$1&#8216;', '$1&#8243;', '$1&#8242;', '$1&#8217;$2', '$1' . $opening_quote . '$2', $closing_quote . '$1', '&#8217;$1', '$1&#215;$2');
+
+		$static_setup = true;
+	}
+
+	// Transform into regexp sub-expression used in _wptexturize_pushpop_element
+	// Must do this everytime in case plugins use these filters in a context sensitive manner
+	
+	
+	$no_texturize_tags = '(' . implode('|', apply_filters('no_texturize_tags', $default_no_texturize_tags) ) . ')';
+	$no_texturize_shortcodes = '(' . implode('|', apply_filters('no_texturize_shortcodes', $default_no_texturize_shortcodes) ) . ')';
+
+	$no_texturize_tags_stack = array();
+	$no_texturize_shortcodes_stack = array();
+
+	for ( $i = 0; $i < $stop; $i++ ) {
+		$curl = $textarr[$i];
+
+		if ( !empty($curl) && '<' != $curl{0} && '[' != $curl{0}
+				&& empty($no_texturize_shortcodes_stack) && empty($no_texturize_tags_stack)) { 
+			// This is not a tag, nor is the texturization disabled
+			// static strings
+			$curl = str_replace($static_characters, $static_replacements, $curl);
+			// regular expressions
+			$curl = preg_replace($dynamic_characters, $dynamic_replacements, $curl);
+		} elseif (!empty($curl)) {
+			/*
+			 * Only call _wptexturize_pushpop_element if first char is correct
+			 * tag opening
+			 */
+			if ('<' == $curl{0})
+				_wptexturize_pushpop_element($curl, $no_texturize_tags_stack, $no_texturize_tags, '<', '>');
+			elseif ('[' == $curl{0})
+				_wptexturize_pushpop_element($curl, $no_texturize_shortcodes_stack, $no_texturize_shortcodes, '[', ']');
+		}
+
+		$curl = preg_replace('/&([^#])(?![a-zA-Z1-4]{1,8};)/', '&#038;$1', $curl);
+		$output .= $curl;
+	}
+
+	return $output;
+}
+function hsq_wptexturize_old($text) {
+	global $wp_cockneyreplace;
 	$output = '';
 	$curl = '';
 	$textarr = preg_split('/(<.*>|\[.*\])/Us', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
@@ -309,16 +386,25 @@ $table = $wpdb->prefix."hsq_options";
 //retrieve new data
 $query = "SELECT `hsq_enable` FROM `".$table."` WHERE 1 AND `hsq_option_id` = '1' limit 1";
 $row = $wpdb->get_row($query,ARRAY_A);
+$version = get_bloginfo('version');
+
 if($row['hsq_enable'] == 'Y')
 {
 	add_filter('the_content', 'hsq_return_format');
 	add_filter('the_excerpt', 'hsq_return_format');
 	add_filter('comment_text', 'hsq_return_format');
 	add_filter('the_rss_content', 'hsq_return_format');
-	add_filter('the_rss_content', 'hsq_wptexturize');
-	add_filter('the_content', 'hsq_wptexturize');
-	add_filter('the_excerpt', 'hsq_wptexturize');
-	add_filter('comment_text', 'hsq_wptexturize');
+	if($version >= 2.9){
+		add_filter('the_rss_content', 'hsq_wptexturize');
+		add_filter('the_content', 'hsq_wptexturize');
+		add_filter('the_excerpt', 'hsq_wptexturize');
+		add_filter('comment_text', 'hsq_wptexturize');
+	}else{
+		add_filter('the_rss_content', 'hsq_wptexturize_old');
+		add_filter('the_content', 'hsq_wptexturize_old');
+		add_filter('the_excerpt', 'hsq_wptexturize_old');
+		add_filter('comment_text', 'hsq_wptexturize_old');
+	}
 	remove_filter('comment_text', 'wptexturize');
 	remove_filter('the_excerpt', 'wptexturize');
 	remove_filter('the_content', 'wptexturize');
