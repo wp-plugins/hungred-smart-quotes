@@ -3,8 +3,8 @@ Contributors: Clay Lua
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=i_ah_yong%40hotmail%2ecom&lc=MY&item_name=Coffee&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
 Tags: hungred, smart, quotes, quote, formatted, text, unformat, format, remover, remove, encode, decode, syntaxhigher evolved
 Requires at least: 2.7
-Tested up to: 2.9.2
-Stable tag: 0.5.4
+Tested up to: 3.0.0
+Stable tag: 0.5.5
 
 This plugin is created by Clay Lua. Please visit the plugin page for more information.
 

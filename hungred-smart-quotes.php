@@ -4,7 +4,7 @@ Plugin Name: Hungred Smart Quotes
 Plugin URI: http://hungred.com/useful-information/wordpress-plugin-hungred-smart-quotes/
 Description: This plugin remove and update any formatted tag to its original text due to wordpress smart quotes capability
 Author: Clay lua
-Version: 0.5.4
+Version: 0.5.5
 Author URI: http://hungred.com
 */
 
@@ -39,7 +39,7 @@ Description: this method depend on hsq_admin for the interface to be produce whe
 			 on the Setting section of Wordpress
 */
 function add_hsq_to_admin_panel_actions() {
-    $plugin_page = add_options_page("Hungred Smart Quotes", "Hungred Smart Quotes", 10, "Hungred Smart Quotes", "hsq_admin");  
+    $plugin_page = add_options_page("Hungred Smart Quotes", "Hungred Smart Quotes", 10, "Hungred-Smart-Quotes", "hsq_admin");  
 	add_action( 'admin_head-'. $plugin_page, 'hsq_admin_header' );
 
 }
